@@ -11,7 +11,6 @@ import (
 
 func GenerateToken(r *http.Request) (string, error) {
 	// convert request to json
-	fmt.Println("request = ", r.URL.Query())
 	requestQuery, err := json.Marshal(r.URL.Query())
 	if err != nil {
 		return "", err
