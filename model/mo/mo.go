@@ -17,7 +17,7 @@ func checkConnection(Db *sql.DB) {
 	}
 }
 
-func (m *Mo) InsertData(msisdn, operatorid, shortcodeid, text string) error {
+func (m *Mo) InsertData(msisdn, operatorid, shortcodeid, text, token string) error {
 	checkConnection(m.Db)
 
 	createdAt := time.Now()
