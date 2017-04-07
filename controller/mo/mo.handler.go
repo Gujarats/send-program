@@ -20,7 +20,7 @@ func init() {
 		log.Ldate|log.Ltime|log.Lshortfile)
 }
 
-func SendMo(mo mo.MoInterface) http.Handler {
+func SendMo(moModel mo.Mo) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		msisdn := r.FormValue("msisdn")
 		operatorId := r.FormValue("operatorid")
@@ -28,16 +28,23 @@ func SendMo(mo mo.MoInterface) http.Handler {
 		text := r.FormValue("text")
 
 		if !util.CheckValue(msisdn, operatorId, shortCodeId, text) {
+
 			global.SetBadResponse(w, "Failed", "Empty Params")
 			return
 		}
 
-		// save the data using go routine
-		go func(msisdn, operatorId, shortCodeId, text string) {
-			token, _ := token.GenerateToken(r)
-			mo.InsertData(msisdn, operatorid, shortcodeid, text, token)
+		moModel.Msisdn = msisdn
+		moModel.OperatorId = operatorId
+		moModel.ShortCodeID = shortCodeId
+		moModel.Text = text
 
-		}(msisdn, operatorId, shortCodeId, text)
+		// save the data using go routine
+		go func(moModel mo.Mo) {
+			token, _ := token.GenerateToken(r)
+			moModel.InsertData(token)
+		}(moModel)
+
+		global.SetOkResponse(w, "Ok", "Data saved", nil)
 
 	})
 }
