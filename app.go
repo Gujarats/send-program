@@ -4,25 +4,39 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	moController "github.com/Gujarats/send-program/controller/mo"
 	"github.com/Gujarats/send-program/database"
 	"github.com/Gujarats/send-program/model/mo"
 )
 
+var logger *log.Logger
+
+func init() {
+	logger = log.New(os.Stderr,
+		"Mo Model :: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+
+}
 func main() {
 	db := database.Connect()
 	defer db.Close()
+	stmIns, err := db.Prepare("INSERT INTO mo (msisdn,operatorid,shortcodeid,text,auth_token, created_at) values (?,?,?,?,?,?)")
+	if err != nil {
+		logger.Fatal(err)
+	}
+	defer stmIns.Close()
 
 	moModel := mo.Mo{
-		Db: db,
+		InsStm: stmIns,
 	}
 
 	http.Handle("/send/mo", moController.SendMo(moModel))
 
 	port := ":8080"
 	fmt.Println("App Started on port = ", port)
-	err := http.ListenAndServe(port, nil)
+	err = http.ListenAndServe(port, nil)
 	if err != nil {
 		log.Panic("App Started Failed = ", err.Error())
 	}
