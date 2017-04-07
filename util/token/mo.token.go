@@ -22,11 +22,26 @@ func GenerateToken(r *http.Request) (string, error) {
 
 	var out bytes.Buffer
 	register.Stdout = &out
+	err = register.Run()
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+
+	return out.String(), nil
+}
+
+func GenerateTokenString(input string) (string, error) {
+	register := exec.Command("./registermo")
+	register.Stdin = strings.NewReader(input)
+
+	var out bytes.Buffer
+	register.Stdout = &out
 	err := register.Run()
 	if err != nil {
 		fmt.Println(err)
-		return "empty"
+		return "", err
 	}
 
-	return out.String()
+	return out.String(), nil
 }
