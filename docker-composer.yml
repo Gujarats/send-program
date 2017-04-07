@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  driver:
+    build: ./send-program
+    command: go run app.go
+    volumes:
+     - ./send-program:/go/src/github.com/Gujarats/send-program
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    links :
+      - mysql
+  mysql:
+      image: mysql:latest
+    container_name: mysql 
+    ports : ["3306:3306"]
