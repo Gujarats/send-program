@@ -7,13 +7,18 @@ import (
 
 	moController "github.com/Gujarats/send-program/controller/mo"
 	"github.com/Gujarats/send-program/database"
+	"github.com/Gujarats/send-program/model/mo"
 )
 
 func main() {
 	db := database.Connect()
 	defer db.Close()
 
-	http.Handle("/send/mo", moController.SendMo())
+	moModel := mo.Mo{
+		Db: db,
+	}
+
+	http.Handle("/send/mo", moController.SendMo(moModel))
 
 	port := ":8080"
 	fmt.Println("App Started on port = ", port)
