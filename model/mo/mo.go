@@ -10,9 +10,9 @@ import (
 )
 
 type Mo struct {
-	Msiidn      string `json:"msiidn"`
-	OperatorId  string `json:"operator_id"`
-	ShortCodeID string `json:"short_code_id"`
+	Msiidn      string `json:"msisdn"`
+	OperatorId  string `json:"operatorid"`
+	ShortCodeID string `json:"shortcodeid"`
 	Text        string `json:"text"`
 	Db          *sql.DB
 }
@@ -28,17 +28,19 @@ func init() {
 
 func checkConnection(Db *sql.DB) {
 	if Db == nil {
-		log.Fatal(errors.New("Database not define"))
+		logger.Fatal(errors.New("Database not define"))
 	}
 }
 
 func (m *Mo) InsertData(token string) error {
-	defer m.Db.Close()
 	checkConnection(m.Db)
-	stmIns, err := m.Db.Prepare("INSERT INTO mo values (?,?,?,?,?,?)")
+	m.Db.Close()
+
+	stmIns, err := m.Db.Prepare("INSERT INTO mo (msisdn,operatorid,shortcodeid,text,auth_token, created_at) values (?,?,?,?,?,?)")
 	if err != nil {
 		logger.Fatal(err)
 	}
+	defer stmIns.Close()
 
 	createdAt := time.Now()
 	result, err := stmIns.Exec(m.Msiidn, m.OperatorId, m.ShortCodeID, m.Text, token, createdAt)
