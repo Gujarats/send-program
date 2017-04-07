@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/Gujarats/send-program/model/global"
+	"github.com/Gujarats/send-program/model/mo"
 	"github.com/Gujarats/send-program/util"
 	"github.com/Gujarats/send-program/util/token"
 )
@@ -19,7 +20,7 @@ func init() {
 		log.Ldate|log.Ltime|log.Lshortfile)
 }
 
-func SendMo() http.Handler {
+func SendMo(mo mo.MoInterface) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		msisdn := r.FormValue("msisdn")
 		operatorId := r.FormValue("operatorid")
@@ -33,10 +34,8 @@ func SendMo() http.Handler {
 
 		// save the data using go routine
 		go func(msisdn, operatorId, shortCodeId, text string) {
-			token, err := token.GenerateToken(r)
-			if err != nil {
-				// cancel go routine and save the request to the disk so that we can send it again
-			}
+			token, _ := token.GenerateToken(r)
+			mo.InsertData(msisdn, operatorid, shortcodeid, text, token)
 
 		}(msisdn, operatorId, shortCodeId, text)
 
