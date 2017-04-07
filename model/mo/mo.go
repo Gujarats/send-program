@@ -3,14 +3,13 @@ package mo
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"log"
 	"os"
 	"time"
 )
 
 type Mo struct {
-	Msiidn      string `json:"msisdn"`
+	Msisdn      string `json:"msisdn"`
 	OperatorId  string `json:"operatorid"`
 	ShortCodeID string `json:"shortcodeid"`
 	Text        string `json:"text"`
@@ -43,13 +42,10 @@ func (m *Mo) InsertData(token string) error {
 	defer stmIns.Close()
 
 	createdAt := time.Now()
-	result, err := stmIns.Exec(m.Msiidn, m.OperatorId, m.ShortCodeID, m.Text, token, createdAt)
+	_, err = stmIns.Exec(m.Msisdn, m.OperatorId, m.ShortCodeID, m.Text, token, createdAt)
 	if err != nil {
 		logger.Println(err)
 	}
-
-	rows, _ := result.RowsAffected()
-	fmt.Println("Row affected = ", rows)
 
 	return nil
 }
