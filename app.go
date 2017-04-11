@@ -22,17 +22,33 @@ func init() {
 func main() {
 	db := database.Connect()
 	defer db.Close()
-	stmIns, err := db.Prepare("INSERT INTO mo (msisdn,operatorid,shortcodeid,text,auth_token, created_at) values (?,?,?,?,?,?)")
+	// create insert prepare statement
+	insStm, err := db.Prepare("INSERT INTO mo (msisdn,operatorid,shortcodeid,text,auth_token, created_at) values (?,?,?,?,?,?)")
 	if err != nil {
 		logger.Fatal(err)
 	}
-	defer stmIns.Close()
+	defer insStm.Close()
+
+	statStm, err := db.Prepare("SELECT COUNT(*) FROM mo WHERE CREATED_AT > ?")
+	if err != nil {
+		logger.Fatal(err)
+	}
+	defer statStm.Close()
+
+	minMaxStm, err := db.Prepare("SELECT min(created_at), max(created_at) from mo order by id DESC")
+	if err != nil {
+		logger.Fatal(err)
+	}
+	defer minMaxStm.Close()
 
 	moModel := mo.Mo{
-		InsStm: stmIns,
+		InsStm:    insStm,
+		StatStm:   statStm,
+		MinMaxStm: minMaxStm,
 	}
 
 	http.Handle("/send/mo", moController.SendMo(moModel))
+	http.Handle("/stat/mo", moController.StatMo(moModel))
 
 	port := ":8080"
 	fmt.Println("App Started on port = ", port)
