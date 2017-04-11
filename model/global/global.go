@@ -20,11 +20,12 @@ func SetBadResponse(w http.ResponseWriter, Status string, Message string) {
 	json.NewEncoder(w).Encode(resp)
 }
 
-func SetOkResponse(w http.ResponseWriter, Status string, Message string, Data interface{}) {
+func SetOkResponse(w http.ResponseWriter, Status string, Message string, Latency float64, Data interface{}) {
 	w.WriteHeader(http.StatusOK)
 	resp := Response{}
 	resp.Status = Status
 	resp.Message = Message
+	resp.Latency = Latency
 	resp.Data = Data
 	json.NewEncoder(w).Encode(resp)
 }
