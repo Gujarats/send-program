@@ -29,7 +29,7 @@ EOF
 echo "creating database";
 bootstrapdb
 
-echo "create index created_at"
+echo "create index created_at";
 create_index
 
 populate_db() {
