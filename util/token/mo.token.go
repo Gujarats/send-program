@@ -27,7 +27,7 @@ func GenerateToken(r *http.Request) (string, error) {
 	}
 
 	//register := exec.Command(".registermo")
-	register := exec.Command("util/token/registermo")
+	register := exec.Command("./registermo")
 	register.Stdin = strings.NewReader(string(requestQuery))
 
 	var out bytes.Buffer
@@ -43,7 +43,7 @@ func GenerateToken(r *http.Request) (string, error) {
 
 func GenerateTokenString(input string) (string, error) {
 	//register := exec.Command("register")
-	register := exec.Command("/util/token/registermo")
+	register := exec.Command("./registermo")
 	register.Stdin = strings.NewReader(input)
 
 	var out bytes.Buffer
