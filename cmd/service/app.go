@@ -42,7 +42,7 @@ func main() {
 	defer statStm.Close()
 
 	// create getData statement.
-	statGet, err := db.Prepare("SELECT * FROM mo_process limit 100")
+	statGet, err := db.Prepare("SELECT * FROM mo_process limit 250")
 	if err != nil {
 		logger.Fatal(err)
 	}
@@ -89,6 +89,7 @@ func startService(moModel mo.Mo, insStm *sql.Stmt) {
 				err := moModel.InsertData(token)
 				if err != nil {
 					// error happens when inserting data
+					logger.Println(err)
 				} else {
 					// remove the data from mo_process table
 				}
