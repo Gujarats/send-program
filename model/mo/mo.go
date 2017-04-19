@@ -16,10 +16,12 @@ type Mo struct {
 	Text        string `json:"text"`
 	CreatedAt   string `json:"created_at"`
 
-	InsStm    *sql.Stmt
-	StatStm   *sql.Stmt
-	StatGet   *sql.Stmt
-	MinMaxStm *sql.Stmt
+	// Statemen
+	InsStm          *sql.Stmt
+	InsStmMoProcess *sql.Stmt
+	StatStm         *sql.Stmt
+	StatGet         *sql.Stmt
+	MinMaxStm       *sql.Stmt
 }
 
 var logger *log.Logger
@@ -71,6 +73,18 @@ func (m *Mo) InsertData(token string) error {
 	_, err := m.InsStm.Exec(m.Msisdn, m.OperatorId, m.ShortCodeID, m.Text, token, createdAt)
 	if err != nil {
 		logger.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func (m *Mo) InsertMoProcess(msisdn, operatorId, shortcodeId, text string) error {
+	createdAt := time.Now()
+	_, err := m.InsStmMoProcess.Exec(msisdn, operatorId, shortcodeId, text, createdAt)
+	if err != nil {
+		logger.Println(err)
+		return err
 	}
 
 	return nil

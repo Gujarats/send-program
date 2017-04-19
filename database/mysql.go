@@ -18,7 +18,7 @@ func init() {
 }
 
 func Connect() *sql.DB {
-	db, err := sql.Open("mysql", "root:@/samtt")
+	db, err := sql.Open("mysql", "root:root@/samtt")
 	if err != nil {
 		logger.Fatal(err)
 	}

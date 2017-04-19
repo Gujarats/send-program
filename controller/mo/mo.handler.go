@@ -7,7 +7,6 @@ import (
 	"github.com/Gujarats/send-program/model/global"
 	"github.com/Gujarats/send-program/model/mo"
 	"github.com/Gujarats/send-program/util"
-	"github.com/Gujarats/send-program/util/token"
 )
 
 func SendMo(moModel mo.Mo) http.Handler {
@@ -24,16 +23,7 @@ func SendMo(moModel mo.Mo) http.Handler {
 			return
 		}
 
-		moModel.Msisdn = msisdn
-		moModel.OperatorId = operatorId
-		moModel.ShortCodeID = shortCodeId
-		moModel.Text = text
-
-		// save the data using go routine
-		go func(moModel mo.Mo) {
-			token, _ := token.GenerateToken(r)
-			moModel.InsertData(token)
-		}(moModel)
+		moModel.InsertMoProcess(msisdn, operatorId, shortCodeId, text)
 
 		elapsed := time.Since(startTime).Seconds()
 		global.SetOkResponse(w, "Ok", "Data saved", elapsed, nil)

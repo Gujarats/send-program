@@ -22,6 +22,16 @@ func init() {
 func main() {
 	db := database.Connect()
 	defer db.Close()
+	db.SetMaxOpenConns(9000000)
+	db.SetMaxIdleConns(9000000)
+
+	// create insert for mo_process table.
+	insStmMoProcess, err := db.Prepare("INSERT INTO mo_process (msisdn,operatorid,shortcodeid,text, created_at) values (?,?,?,?,?)")
+	if err != nil {
+		logger.Fatal(err)
+	}
+	defer insStmMoProcess.Close()
+
 	// create insert prepare statement
 	insStm, err := db.Prepare("INSERT INTO mo (msisdn,operatorid,shortcodeid,text,auth_token, created_at) values (?,?,?,?,?,?)")
 	if err != nil {
@@ -42,9 +52,10 @@ func main() {
 	defer minMaxStm.Close()
 
 	moModel := mo.Mo{
-		InsStm:    insStm,
-		StatStm:   statStm,
-		MinMaxStm: minMaxStm,
+		InsStm:          insStm,
+		InsStmMoProcess: insStmMoProcess,
+		StatStm:         statStm,
+		MinMaxStm:       minMaxStm,
 	}
 
 	http.Handle("/send/mo", moController.SendMo(moModel))
