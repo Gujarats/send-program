@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 export DEBIAN_FRONTEND=noninteractive
 
-bootstrapdb(){
+create_database(){
     cat <<EOF | mysql -uroot -proot
     DROP DATABASE IF EXISTS samtt;
     CREATE DATABASE samtt;
+EOF
+}
+
+bootstrapdb(){
+    cat <<EOF | mysql -uroot -proot
     USE samtt;
     CREATE TABLE mo (
       id int NOT NULL auto_increment,
@@ -19,7 +24,22 @@ bootstrapdb(){
 EOF
 }
 
-create_index(){
+create_mo_process(){
+    cat << EOF | mysql -uroot -proot
+    USE samtt;
+    CREATE TABLE mo_process (
+      id int NOT NULL auto_increment,
+      msisdn varchar(20),
+      operatorid int,
+      shortcodeid int,
+      text varchar(255),
+      created_at DATETIME,
+      PRIMARY KEY(id)
+    ) ;
+EOF
+}
+
+create_index_mo(){
     cat <<EOF | mysql -uroot -proot
     USE samtt;
     CREATE INDEX  created_at_inde on mo (created_at) using BTREE;
@@ -27,14 +47,22 @@ EOF
 }
 
 echo "creating database";
+create_database
+
+echo "createing table mo";
 bootstrapdb
 
+echo "creating table mo_process"
+create_mo_process
+
 echo "create index created_at";
-create_index
+create_index_mo
 
 populate_db() {
-    populate_db 10000000| mysql -u root -p root samtt
+    ./populate_db 1000000 | mysql -uroot -proot samtt
 }
 
 echo "seeding databsae";
 populate_db
+
+echo "done";
