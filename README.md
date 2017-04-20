@@ -1,6 +1,7 @@
 # Send Program
 
-This example program is used for generating dummy data using php, and creating API to save data using Goroutine so the user Don't need to wait for the result.
+This example program is used for generating dummy data using php, and creating API to save data. 
+In this case there are module that are really slow called `registermo`. so I called this using goroutine and save the result to mysql.
 
 ## Prerequisite
 You need all of this tech to run this project.
@@ -23,7 +24,7 @@ We can create the API to use and save the data using goroutine when generating t
 ## result
 This is the load testing result using Vegeta : 
 
-![result_load_testing_from_local](https://github.com/Gujarats/send-program/blob/master/load-testing/result.png)
+![result_load_testing_from_local](https://github.com/Gujarats/send-program/blob/master/result_pikes.png)
 
 Above test is using this command : 
 ```shell
