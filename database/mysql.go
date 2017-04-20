@@ -17,8 +17,8 @@ func init() {
 
 }
 
-func Connect() *sql.DB {
-	db, err := sql.Open("mysql", "root:root@/samtt")
+func Connect(user, pass, dbName string) *sql.DB {
+	db, err := sql.Open("mysql", user+":"+pass+"@/"+dbName)
 	if err != nil {
 		logger.Fatal(err)
 	}
