@@ -9,21 +9,32 @@ import (
 	moController "github.com/Gujarats/send-program/controller/mo"
 	"github.com/Gujarats/send-program/database"
 	"github.com/Gujarats/send-program/model/mo"
+	"github.com/Gujarats/send-program/util/config"
 )
 
 var logger *log.Logger
+var myConfig config.Config
+var configDB config.ConfigDB
 
 func init() {
+	var err error
 	logger = log.New(os.Stderr,
 		"Mo Model :: ",
 		log.Ldate|log.Ltime|log.Lshortfile)
 
+	// read config file for database authentication
+	configDB, err = config.ReadConfigJson("../../files/config/database.json")
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	fmt.Printf("succes read configuration :: %+v\n", configDB)
+
 }
 func main() {
-	db := database.Connect()
+	db := database.Connect(configDB.User, configDB.Password, configDB.DB)
 	defer db.Close()
-	db.SetMaxOpenConns(9000000)
-	db.SetMaxIdleConns(9000000)
+	db.SetMaxOpenConns(10000)
 
 	// create insert for mo_process table.
 	insStmMoProcess, err := db.Prepare("INSERT INTO mo_process (msisdn,operatorid,shortcodeid,text, created_at) values (?,?,?,?,?)")

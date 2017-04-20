@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/Gujarats/send-program/database"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -18,16 +19,7 @@ func init() {
 }
 
 func connect() *sql.DB {
-	db, err := sql.Open("mysql", "root:@/samtt")
-	if err != nil {
-		logger.Fatal(err)
-	}
-
-	err = db.Ping()
-	if err != nil {
-		logger.Fatal(err)
-	}
-
+	db := database.Connect()
 	return db
 }
 

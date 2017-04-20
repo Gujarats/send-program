@@ -61,7 +61,7 @@ func main() {
 		MinMaxStm: minMaxStm,
 	}
 
-	fmt.Println("Start Service to :: Begin !!!")
+	fmt.Println("Start Service :: Begin !!!")
 	startService(moModel, insStm)
 }
 
@@ -96,9 +96,9 @@ func startService(moModel mo.Mo, insStm *sql.Stmt) {
 				wg.Done()
 			}(moModel, string(jsonMo))
 		}
-	}
 
-	wg.Wait()
+		wg.Wait()
+	}
 
 	if len(moModels) == 0 {
 		// prevent program from exit by using recursive calls

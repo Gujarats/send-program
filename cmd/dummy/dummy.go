@@ -39,7 +39,7 @@ func main() {
 	defer insStm.Close()
 
 	// execute index
-	_, err := indexStm.Exec()
+	_, err = indexStm.Exec()
 	if err != nil {
 		logger.Fatal(err)
 	}
