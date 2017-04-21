@@ -1,5 +1,4 @@
 # Send Program
-
 This example program is used for generating dummy data using php, and creating API to save data. 
 In this case there are module that are really slow called `registermo`. so I called this using goroutine and save the result to mysql.
 
@@ -18,8 +17,8 @@ the `registermo` it self when you running it and give it som string it will give
 Imagine if one request have to wait for 2-3 seconds, what about several thousands of request in  seconds? the wait time will be enourmous and too long.
 
 ## Solutions 
-We can create the API to use and save the data using goroutine when generating the token using `registermo` and save the data to our table.
-
+First create the API to save the incoming request to `mo_process` so all the data from the request is saved first.
+And then creating the service to save the data using goroutine when generating the token using `registermo` and save them to `mo` table. 
 
 ## result
 This is the load testing result using Vegeta : 
@@ -28,9 +27,9 @@ This is the load testing result using Vegeta :
 
 Above test is using this command : 
 ```shell
-echo "GET http://localhost:8080/send/mo?msisdn=60123456789&operatorid=3&shortcodeid=8&text=ON+GAMES" | vegeta attack -duration=10s -rate=2000 | sudo tee results_find_driver.bin | vegeta report
+echo "GET http://localhost:8080/send/mo?msisdn=60123456789&operatorid=3&shortcodeid=8&text=ON+GAMES" | vegeta attack -duration=60s -rate=2000 | sudo tee results_find_driver.bin | vegeta report
 ```
-It means that we're creating 2000 request persecond in 10 seconds!. I can create more request to seveal thousands more like 10.000 request but my machine will eat rams and cpu to create this processs.
+It means that we're creating 2000 request persecond in 60 seconds!. I can create more request to seveal thousands more like 10.000 request but my machine will eat rams and cpu to create this processs.
 
 This is my spec of my laptop : 
 
