@@ -19,7 +19,7 @@ func init() {
 }
 
 func connect() *sql.DB {
-	db := database.Connect()
+	db := database.Connect("root", "root", "samtt")
 	return db
 }
 

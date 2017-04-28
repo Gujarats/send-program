@@ -15,6 +15,9 @@ func main() {
 	app.Usage = "To query some data from the database adn execute binary file"
 	app.Version = "1.0.0"
 
+	db := connect()
+	defer db.Close()
+
 	app.Commands = []cli.Command{
 		// NOTE : Command to count rows
 		{
@@ -27,9 +30,6 @@ func main() {
 					fmt.Println("Please use input the date on input  = Y-m-d HH:mm:ss")
 					return nil
 				}
-
-				db := connect()
-				defer db.Close()
 
 				stm := countRows(db)
 				defer stm.Close()
@@ -52,8 +52,6 @@ func main() {
 			Aliases: []string{"mp"},
 			Usage:   "Count total mo that receive but and not yet processed",
 			Action: func(c *cli.Context) error {
-				db := connect()
-				defer db.Close()
 
 				stm := moReceive(db)
 				defer stm.Close()
@@ -76,8 +74,6 @@ func main() {
 			Aliases: []string{"rmp"},
 			Usage:   "Remove all mo_process !!! WARNING this will delete all datas",
 			Action: func(c *cli.Context) error {
-				db := connect()
-				defer db.Close()
 
 				stm := moRemove(db)
 				defer stm.Close()
