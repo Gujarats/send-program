@@ -18,9 +18,9 @@ func init() {
 
 }
 
-func connect() *sql.DB {
-	db := database.Connect("root", "root", "samtt")
-	return db
+func connect(user, pass, db string) *sql.DB {
+	connection := database.Connect(user, pass, db)
+	return connection
 }
 
 func createTable(db *sql.DB, table string) *sql.Stmt {

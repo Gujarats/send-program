@@ -5,8 +5,20 @@ import (
 	"os"
 	"sort"
 
+	"github.com/Gujarats/send-program/util/config"
 	"github.com/urfave/cli"
 )
+
+var configDB config.ConfigDB
+
+func init() {
+	var err error
+	// read config file for database authentication
+	configDB, err = config.ReadConfigJson("../../files/config/database.json")
+	if err != nil {
+		logger.Fatal(err)
+	}
+}
 
 func main() {
 
@@ -15,7 +27,7 @@ func main() {
 	app.Usage = "To query some data from the database adn execute binary file"
 	app.Version = "1.0.0"
 
-	db := connect()
+	db := connect(configDB.User, configDB.Password, configDB.DB)
 	defer db.Close()
 
 	app.Commands = []cli.Command{
